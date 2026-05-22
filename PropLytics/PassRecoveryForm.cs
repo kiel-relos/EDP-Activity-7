@@ -7,8 +7,6 @@ namespace PropLytics
 {
     public class RecoveryForm : Form
     {
-        private DatabaseConnection db = new DatabaseConnection();
-
         public RecoveryForm()
         {
             this.Text = "Account Recovery";
@@ -27,7 +25,7 @@ namespace PropLytics
             
             btnRecover.Click += (s, e) => 
             {
-                using (MySqlConnection conn = db.GetConnection())
+                using (MySqlConnection conn = DatabaseConnection.GetConnection())
                 {
                     try
                     {

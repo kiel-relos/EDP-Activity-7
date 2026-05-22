@@ -1905,11 +1905,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "R:\\laragon\\www\\Information System - EDP Activity\\PropLytics\\PropLytics.csproj",
+      "projectUniqueName": "R:\\laragon\\www\\Information System - EDP Activity\\EDP-Activity-7\\PropLytics\\PropLytics.csproj",
       "projectName": "PropLytics",
-      "projectPath": "R:\\laragon\\www\\Information System - EDP Activity\\PropLytics\\PropLytics.csproj",
+      "projectPath": "R:\\laragon\\www\\Information System - EDP Activity\\EDP-Activity-7\\PropLytics\\PropLytics.csproj",
       "packagesPath": "C:\\Users\\Kiel Hedrix\\.nuget\\packages\\",
-      "outputPath": "R:\\laragon\\www\\Information System - EDP Activity\\PropLytics\\obj\\",
+      "outputPath": "R:\\laragon\\www\\Information System - EDP Activity\\EDP-Activity-7\\PropLytics\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -29,83 +29,124 @@ namespace PropLytics
             LoadData();
         }
 
-        private void SetupUI()
-        {
-            this.Text = "Information System Transactions & Reports";
-            this.Size = new Size(850, 650);
-            this.StartPosition = FormStartPosition.CenterScreen;
+    private void SetupUI()
+    {
+    this.Text = "Information System - Library Dashboard";
+    this.Size = new Size(950, 650);
+    this.StartPosition = FormStartPosition.CenterScreen;
+    this.BackColor = Color.WhiteSmoke;
 
-            // --- 1. Transactions Frame ---
-            // Increased height to 100 to fit the dropdown menus
-            GroupBox transGroup = new GroupBox { Text = "Primary Transactions", Dock = DockStyle.Top, Height = 100, Padding = new Padding(10) };
-            
-            // Dropdowns for selection
-            Label lblBook = new Label { Text = "Select Book:", Location = new Point(20, 25), Width = 80 };
-            cmbBooks = new ComboBox { Location = new Point(100, 22), Width = 200, DropDownStyle = ComboBoxStyle.DropDownList };
-            
-            Label lblMember = new Label { Text = "Member:", Location = new Point(320, 25), Width = 60 };
-            cmbMembers = new ComboBox { Location = new Point(380, 22), Width = 200, DropDownStyle = ComboBoxStyle.DropDownList };
+    // ================= TOP CONTROL BAR =================
+    Panel topPanel = new Panel
+    {
+        Dock = DockStyle.Top,
+        Height = 110,
+        BackColor = Color.FromArgb(30, 30, 30)
+    };
 
-            // Buttons
-            Button btnBorrow = new Button { Text = "1. Borrow Book", Width = 120, Location = new Point(20, 60), BackColor = Color.LightBlue, Cursor = Cursors.Hand };
-            btnBorrow.Click += BtnBorrow_Click;
+    Label title = new Label
+    {
+        Text = "📚 Library Transaction System",
+        ForeColor = Color.White,
+        Font = new Font("Segoe UI", 16, FontStyle.Bold),
+        Location = new Point(20, 15),
+        AutoSize = true
+    };
 
-            Button btnReturn = new Button { Text = "2. Return Book", Width = 120, Location = new Point(150, 60), BackColor = Color.LightGreen, Cursor = Cursors.Hand };
-            btnReturn.Click += BtnReturn_Click;
+    // BOOK + MEMBER LABELS
+    Label lblBook = new Label { Text = "Book:", ForeColor = Color.White, Location = new Point(20, 60), AutoSize = true };
+    cmbBooks = new ComboBox { Location = new Point(70, 57), Width = 180, DropDownStyle = ComboBoxStyle.DropDownList };
 
-            Button btnAddStock = new Button { Text = "3. Add Inventory", Width = 120, Location = new Point(280, 60), BackColor = Color.LightYellow, Cursor = Cursors.Hand };
-            btnAddStock.Click += BtnAddStock_Click;
+    Label lblMember = new Label { Text = "Member:", ForeColor = Color.White, Location = new Point(270, 60), AutoSize = true };
+    cmbMembers = new ComboBox { Location = new Point(340, 57), Width = 180, DropDownStyle = ComboBoxStyle.DropDownList };
 
-            Button btnDelete = new Button { Text = "Delete Selected", Width = 120, Location = new Point(460, 60), BackColor = Color.IndianRed, ForeColor = Color.White, Cursor = Cursors.Hand };
-            btnDelete.Click += BtnDelete_Click;
+    topPanel.Controls.Add(title);
+    topPanel.Controls.Add(lblBook);
+    topPanel.Controls.Add(cmbBooks);
+    topPanel.Controls.Add(lblMember);
+    topPanel.Controls.Add(cmbMembers);
 
-            transGroup.Controls.Add(lblBook);
-            transGroup.Controls.Add(cmbBooks);
-            transGroup.Controls.Add(lblMember);
-            transGroup.Controls.Add(cmbMembers);
-            transGroup.Controls.Add(btnBorrow);
-            transGroup.Controls.Add(btnReturn);
-            transGroup.Controls.Add(btnAddStock);
-            transGroup.Controls.Add(btnDelete);
-            this.Controls.Add(transGroup);
+    // ================= BUTTON PANEL =================
+    FlowLayoutPanel buttonPanel = new FlowLayoutPanel
+    {
+        Dock = DockStyle.Top,
+        Height = 60,
+        FlowDirection = FlowDirection.LeftToRight,
+        Padding = new Padding(15),
+        BackColor = Color.WhiteSmoke
+    };
 
-            // --- 2. Data Grid Frame ---
-            GroupBox gridGroup = new GroupBox { Text = "Transaction Records", Dock = DockStyle.Fill, Padding = new Padding(10) };
-            dataGridView = new DataGridView
-            {
-                Dock = DockStyle.Fill,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
-                AllowUserToAddRows = false,
-                ReadOnly = true,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                BackgroundColor = Color.WhiteSmoke
-            };
-            gridGroup.Controls.Add(dataGridView);
-            this.Controls.Add(gridGroup);
-            gridGroup.BringToFront();
+    Button btnBorrow = CreateButton("Borrow Book", Color.SteelBlue);
+    btnBorrow.Click += BtnBorrow_Click;
 
-            // --- 3. Export Module Frame ---
-            Panel exportPanel = new Panel { Dock = DockStyle.Bottom, Height = 70, Padding = new Padding(10) };
-            Button btnExport = new Button { 
-                Text = "Generate Excel Report", 
-                Width = 220, 
-                Dock = DockStyle.Right, 
-                BackColor = Color.SeaGreen, 
-                ForeColor = Color.White, 
-                Font = new Font("Segoe UI", 11, FontStyle.Bold),
-                Cursor = Cursors.Hand
-            };
-            btnExport.Click += BtnExport_Click;
-            exportPanel.Controls.Add(btnExport);
-            this.Controls.Add(exportPanel);
-        }
+    Button btnReturn = CreateButton("Return Book", Color.SeaGreen);
+    btnReturn.Click += BtnReturn_Click;
+
+    Button btnAddStock = CreateButton("Add Inventory", Color.Goldenrod);
+    btnAddStock.Click += BtnAddStock_Click;
+
+    Button btnDelete = CreateButton("Delete Record", Color.IndianRed);
+    btnDelete.Click += BtnDelete_Click;
+
+    Button btnExport = CreateButton("Export Excel", Color.DarkGreen);
+    btnExport.Click += BtnExport_Click;
+
+    buttonPanel.Controls.Add(btnBorrow);
+    buttonPanel.Controls.Add(btnReturn);
+    buttonPanel.Controls.Add(btnAddStock);
+    buttonPanel.Controls.Add(btnDelete);
+    buttonPanel.Controls.Add(btnExport);
+
+    // ================= DATA GRID =================
+    GroupBox gridGroup = new GroupBox
+    {
+        Text = "Transaction Records",
+        Dock = DockStyle.Fill,
+        Font = new Font("Segoe UI", 10, FontStyle.Bold),
+        Padding = new Padding(10)
+    };
+
+    dataGridView = new DataGridView
+    {
+        Dock = DockStyle.Fill,
+        AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+        AllowUserToAddRows = false,
+        ReadOnly = true,
+        SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+        BackgroundColor = Color.White,
+        BorderStyle = BorderStyle.None
+    };
+
+    gridGroup.Controls.Add(dataGridView);
+
+    // ================= ADD CONTROLS =================
+    this.Controls.Add(gridGroup);
+    this.Controls.Add(buttonPanel);
+    this.Controls.Add(topPanel);
+}
+
+// ================= BUTTON DESIGN HELPER =================
+private Button CreateButton(string text, Color color)
+{
+    return new Button
+    {
+        Text = text,
+        Width = 140,
+        Height = 35,
+        BackColor = color,
+        ForeColor = Color.White,
+        FlatStyle = FlatStyle.Flat,
+        Margin = new Padding(8, 10, 8, 10),
+        Cursor = Cursors.Hand
+    };
+}
 
         // --- FETCH DATA FOR DROPDOWNS ---
         private void LoadComboBoxes()
         {
             try
             {
-                using (MySqlConnection conn = new MySqlConnection(connectionString))
+                using (var conn = DatabaseConnection.GetConnection())
                 {
                     conn.Open();
                     // Load Books
@@ -176,7 +217,7 @@ namespace PropLytics
                 {
                     try
                     {
-                        using (MySqlConnection conn = new MySqlConnection(connectionString))
+                        using (var conn = DatabaseConnection.GetConnection())
                         {
                             conn.Open();
                             string query = "DELETE FROM Transactions WHERE TransactionID = @id";
@@ -206,7 +247,7 @@ namespace PropLytics
         {
             try
             {
-                using (MySqlConnection conn = new MySqlConnection(connectionString))
+                using (var conn = DatabaseConnection.GetConnection())
                 {
                     conn.Open();
                     string query = "INSERT INTO Transactions (BookID, MemberID, TransactionType, ProcessedBy) VALUES (@bookId, @memberId, @transType, @userId)";
@@ -232,7 +273,7 @@ namespace PropLytics
         {
             try
             {
-                using (MySqlConnection conn = new MySqlConnection(connectionString))
+                using (var conn = DatabaseConnection.GetConnection())
                 {
                     conn.Open();
                     string query = @"
@@ -294,7 +335,7 @@ private void BtnExport_Click(object? sender, EventArgs e)
 
             // 2. Insert the Logo Image
             // IMPORTANT: Change "R:\" to "C:\" if your laragon is on your C drive!
-            string logoPath = @"R:\laragon\www\Information System - EDP Activity\PropLytics\library_logo.png"; 
+            string logoPath = @"R:\laragon\www\Information System - EDP Activity\EDP-Activity-7\PropLytics\library_logo.png"; 
 
             if (File.Exists(logoPath))
             {
