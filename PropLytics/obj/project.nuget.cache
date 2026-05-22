@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "2PZ3FFP1OZnbUtmUSOxP/xDfMgQiN/c4YhecSMFVgJozjxp2EPlKYGkWr/wk0pzLk4DdKfHNef7cUFYsTNYbyg==",
+  "dgSpecHash": "RzZYs3vb4j3nm9gAgsQjjhLQyi3ZojXlVkEnrkW2HvkM1GbduPWkwU/efyiP8waUQ7Lw9NHy09w0XFLjA3Bsxw==",
   "success": true,
-  "projectFilePath": "R:\\laragon\\www\\Information System - EDP Activity\\PropLytics\\PropLytics.csproj",
+  "projectFilePath": "R:\\laragon\\www\\Information System - EDP Activity\\EDP-Activity-7\\PropLytics\\PropLytics.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Kiel Hedrix\\.nuget\\packages\\bouncycastle.cryptography\\2.6.2\\bouncycastle.cryptography.2.6.2.nupkg.sha512",
     "C:\\Users\\Kiel Hedrix\\.nuget\\packages\\epplus\\8.5.4\\epplus.8.5.4.nupkg.sha512",

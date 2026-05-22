@@ -1,24 +1,32 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
 
 namespace PropLytics
 {
     public class DashboardForm : Form
     {
+        // GLOBAL CONTROLS
+        private DataGridView dgvRecentBooks;
+
         public DashboardForm()
         {
-            this.Text = "PropLytics - Main Dashboard";
+            this.Text = "Library System - Main Dashboard";
             this.Size = new Size(800, 600);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.Black;
 
             // Navigation Panel
-            Panel navPanel = new Panel { Dock = DockStyle.Left, Width = 200, BackColor = Color.White };
-            
+            Panel navPanel = new Panel
+            {
+                Dock = DockStyle.Left,
+                Width = 200,
+                BackColor = Color.White
+            };
+
             Button btnHome = new Button { Text = "Dashboard Home", Dock = DockStyle.Top, Height = 50, BackColor = Color.Black, ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
             Button btnReports = new Button { Text = "Report Generator", Dock = DockStyle.Top, Height = 50, BackColor = Color.Black, ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
             Button btnUsers = new Button { Text = "User Management", Dock = DockStyle.Top, Height = 50, BackColor = Color.Black, ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
@@ -28,7 +36,8 @@ namespace PropLytics
             btnReports.Click += (s, e) => new ReportGeneratorForm().ShowDialog();
             btnUsers.Click += (s, e) => new UserManagementForm().ShowDialog();
             btnAbout.Click += (s, e) => new AboutForm().ShowDialog();
-            btnLogout.Click += (s, e) => 
+
+            btnLogout.Click += (s, e) =>
             {
                 this.Close();
                 new LoginForm().Show();
@@ -40,114 +49,149 @@ namespace PropLytics
             navPanel.Controls.Add(btnHome);
             navPanel.Controls.Add(btnLogout);
 
-            // Main Content Area
-            Label lblWelcome = new Label { Text = "Welcome to the Information System", Font = new Font("Segoe UI", 16, FontStyle.Bold), Location = new Point(220, 30), AutoSize = true, ForeColor = Color.White, BackColor = Color.Black };
-            
-            // Initialize database and load graph data
-           // Initialize hardcoded data for the UI graph
-            List<(string Day, int Value)> performanceData = new List<(string Day, int Value)>
-        {
-            ("Mon", 85), ("Tue", 78), ("Wed", 92), ("Thu", 88), ("Fri", 95), ("Sat", 80), ("Sun", 75)
-        };
+            // =========================
+            // DATABASE VALUES
+            // =========================
+            int totalBooks = GetCount("SELECT COUNT(*) FROM Books");
+            int borrowedBooks = GetCount("SELECT COUNT(*) FROM Transactions WHERE TransactionType = 'Borrow'");
+            int returnedBooks = GetCount("SELECT COUNT(*) FROM Transactions WHERE TransactionType = 'Return'");
 
-            // System Performance Graph
-            Label lblChart = new Label { Text = "System Performance (Weekly)", Location = new Point(220, 60), Font = new Font("Segoe UI", 12, FontStyle.Bold), AutoSize = true, ForeColor = Color.White, BackColor = Color.Black };
-
-            int[] performanceValues = performanceData.Select(item => item.Value).ToArray();
-            string[] performanceLabels = performanceData.Select(item => item.Day).ToArray();
-
-            Panel graphPanel = new Panel { Location = new Point(220, 90), Size = new Size(550, 250), BackColor = Color.FromArgb(20, 20, 20) };
-            graphPanel.Paint += (s, e) =>
+            // Labels
+            Label lblWelcome = new Label
             {
-                Graphics g = e.Graphics;
-                g.SmoothingMode = SmoothingMode.AntiAlias;
-
-                Rectangle bounds = graphPanel.ClientRectangle;
-                bounds.Inflate(-50, -40);
-
-                using Pen axisPen = new Pen(Color.White, 2);
-                using Pen gridPen = new Pen(Color.FromArgb(80, 80, 80), 1);
-                using Pen linePen = new Pen(Color.LimeGreen, 3);
-                using Brush labelBrush = new SolidBrush(Color.White);
-                using Brush markerBrush = new SolidBrush(Color.LimeGreen);
-
-                int count = performanceValues.Length;
-                int minValue = performanceValues.Min();
-                int maxValue = performanceValues.Max();
-                int range = Math.Max(10, maxValue - minValue);
-
-                // Draw gridlines and labels
-                for (int row = 0; row <= 4; row++)
-                {
-                    int y = bounds.Top + row * bounds.Height / 4;
-                    g.DrawLine(gridPen, bounds.Left, y, bounds.Right, y);
-                    int value = maxValue - row * range / 4;
-                    g.DrawString(value.ToString(), new Font("Segoe UI", 8), labelBrush, bounds.Left - 40, y - 8);
-                }
-
-                g.DrawLine(axisPen, bounds.Left, bounds.Bottom, bounds.Right, bounds.Bottom);
-                g.DrawLine(axisPen, bounds.Left, bounds.Top, bounds.Left, bounds.Bottom);
-
-                PointF[] points = new PointF[count];
-                for (int i = 0; i < count; i++)
-                {
-                    float x = bounds.Left + i * (bounds.Width / (float)(count - 1));
-                    float y = bounds.Bottom - (performanceValues[i] - minValue) / (float)range * bounds.Height;
-                    points[i] = new PointF(x, y);
-                }
-
-                if (points.Length > 1)
-                {
-                    g.DrawLines(linePen, points);
-                }
-
-                for (int i = 0; i < count; i++)
-                {
-                    g.FillEllipse(markerBrush, points[i].X - 5, points[i].Y - 5, 10, 10);
-                    g.DrawString(performanceLabels[i], new Font("Segoe UI", 8), labelBrush, points[i].X - 12, bounds.Bottom + 4);
-                }
+                Text = "Welcome to the Library System Dashboard",
+                Font = new Font("Segoe UI", 16, FontStyle.Bold),
+                Location = new Point(220, 30),
+                AutoSize = true,
+                ForeColor = Color.White
             };
 
-            // Mock Data Grids for UI structure
-            DataGridView dgvRecentBookings = new DataGridView
+            Label lblTotalBooks = new Label
             {
-                Location = new Point(220, 360),
-                Size = new Size(550, 150),
-                BackgroundColor = Color.Black,
-                BorderStyle = BorderStyle.None,
-                GridColor = Color.Gray,
+                Text = $"Total Books: {totalBooks}",
+                Location = new Point(220, 80),
                 ForeColor = Color.White,
-                ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
-                {
-                    BackColor = Color.FromArgb(45, 45, 45),
-                    ForeColor = Color.White,
-                    Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                    Alignment = DataGridViewContentAlignment.MiddleLeft
-                },
+                AutoSize = true
+            };
+
+            Label lblBorrowed = new Label
+            {
+                Text = $"Borrowed Books: {borrowedBooks}",
+                Location = new Point(220, 110),
+                ForeColor = Color.Orange,
+                AutoSize = true
+            };
+
+            Label lblReturned = new Label
+            {
+                Text = $"Returned Books: {returnedBooks}",
+                Location = new Point(220, 140),
+                ForeColor = Color.LimeGreen,
+                AutoSize = true
+            };
+
+            // Refresh Button
+            Button btnRefresh = new Button
+            {
+                Text = "Refresh Library Data",
+                Location = new Point(220, 170),
+                Width = 180,
+                Height = 30,
+                BackColor = Color.LimeGreen
+            };
+
+            btnRefresh.Click += (s, e) =>
+            {
+                lblBorrowed.Text = "Borrowed Books: " +
+                    GetCount("SELECT COUNT(*) FROM Transactions WHERE TransactionType = 'Borrow'");
+
+                lblReturned.Text = "Returned Books: " +
+                    GetCount("SELECT COUNT(*) FROM Transactions WHERE TransactionType = 'Return'");
+            };
+
+            // RECENT BOOKS GRID
+            dgvRecentBooks = new DataGridView
+            {
+                Location = new Point(220, 220),
+                Size = new Size(550, 250),
+                BackgroundColor = Color.Black,
+                ForeColor = Color.White,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                ReadOnly = true,
                 DefaultCellStyle = new DataGridViewCellStyle
                 {
-                    BackColor = Color.Black,
+                    BackColor = Color.FromArgb(30, 30, 30),
                     ForeColor = Color.White,
-                    SelectionBackColor = Color.DimGray,
-                    SelectionForeColor = Color.White,
-                    Font = new Font("Segoe UI", 9F)
-                },
-                EnableHeadersVisualStyles = false,
-                RowHeadersVisible = false,
-                AllowUserToAddRows = false,
-                ReadOnly = true,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
-                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize,
-                RowTemplate = { Height = 30 }
+                    SelectionBackColor = Color.DodgerBlue,
+                    SelectionForeColor = Color.White
+                }
             };
-            dgvRecentBookings.DataSource = performanceData.Select(item => new { Day = item.Day, Performance = item.Value }).ToList();
-            dgvRecentBookings.BackgroundColor = Color.Black;
 
+            LoadRecentBooks();
+
+            // ADD CONTROLS
             this.Controls.Add(navPanel);
             this.Controls.Add(lblWelcome);
-            this.Controls.Add(lblChart);
-            this.Controls.Add(graphPanel);
-            this.Controls.Add(dgvRecentBookings);
+            this.Controls.Add(lblTotalBooks);
+            this.Controls.Add(lblBorrowed);
+            this.Controls.Add(lblReturned);
+            this.Controls.Add(btnRefresh);
+            this.Controls.Add(dgvRecentBooks);
+        }
+
+        // ================= DATABASE METHODS =================
+
+        private int GetCount(string query)
+        {
+            int count = 0;
+
+            try
+            {
+                using (var conn = DatabaseConnection.GetConnection())
+                {
+                    conn.Open();
+                    using (var cmd = new MySqlCommand(query, conn))
+                    {
+                        count = Convert.ToInt32(cmd.ExecuteScalar());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            return count;
+        }
+
+        private void LoadRecentBooks()
+        {
+            try
+            {
+                using (var conn = DatabaseConnection.GetConnection())
+                {
+                    conn.Open();
+
+                    string query = @"
+                        SELECT b.Title AS BookTitle,
+                               t.TransactionType AS Status
+                        FROM Transactions t
+                        JOIN Books b ON t.BookID = b.BookID
+                        ORDER BY t.TransactionDate DESC
+                        LIMIT 10";
+
+                    using (var adapter = new MySqlDataAdapter(query, conn))
+                    {
+                        System.Data.DataTable dt = new System.Data.DataTable();
+                        adapter.Fill(dt);
+                        dgvRecentBooks.DataSource = dt;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

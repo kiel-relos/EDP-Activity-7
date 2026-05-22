@@ -12,7 +12,6 @@ namespace PropLytics
         private TextBox txtUsername, txtPassword, txtEmail, txtSearch;
         private ComboBox cmbStatus;
         private Label lblIDDisplay;
-        private DatabaseConnection db = new DatabaseConnection();
         private string selectedUserID = "";
 
         public UserManagementForm()
@@ -84,7 +83,7 @@ namespace PropLytics
 
         private void LoadData(string searchTerm = "")
         {
-            using (MySqlConnection conn = db.GetConnection())
+            using (MySqlConnection conn = DatabaseConnection.GetConnection())
             {
                 try
                 {
@@ -104,7 +103,7 @@ namespace PropLytics
 
         private void BtnAdd_Click(object sender, EventArgs e)
         {
-            using (MySqlConnection conn = db.GetConnection())
+            using (MySqlConnection conn = DatabaseConnection.GetConnection())
             {
                 try
                 {
@@ -128,7 +127,7 @@ namespace PropLytics
         {
             if (string.IsNullOrEmpty(selectedUserID)) { MessageBox.Show("Select a user to update."); return; }
 
-            using (MySqlConnection conn = db.GetConnection())
+            using (MySqlConnection conn = DatabaseConnection.GetConnection())
             {
                 try
                 {
