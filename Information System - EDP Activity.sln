@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
@@ -22,3 +23,29 @@ Global
 		SolutionGuid = {4116B2B4-F8E1-4F98-B16D-ED6B52D6A969}
 	EndGlobalSection
 EndGlobal
+=======
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PropLytics", "PropLytics\PropLytics.csproj", "{589A86C9-6D9B-501D-7A9E-34540074F614}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{589A86C9-6D9B-501D-7A9E-34540074F614}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{589A86C9-6D9B-501D-7A9E-34540074F614}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{589A86C9-6D9B-501D-7A9E-34540074F614}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{589A86C9-6D9B-501D-7A9E-34540074F614}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4116B2B4-F8E1-4F98-B16D-ED6B52D6A969}
+	EndGlobalSection
+EndGlobal
+>>>>>>> a2829a0b2cb1ad42f8d031573a2f08252fc780fb
